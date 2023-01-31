@@ -1,0 +1,23 @@
+{
+  "name": "nosql-challenge",
+  "version": "1.0.0",
+  "description": "nosql challenge",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "mongoose": "^6.9.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alexclaytonbootcamp/NoSQL-Challenge.git"
+  },
+  "author": "Alex Clayton",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alexclaytonbootcamp/NoSQL-Challenge/issues"
+  },
+  "homepage": "https://github.com/alexclaytonbootcamp/NoSQL-Challenge#readme"
+}
