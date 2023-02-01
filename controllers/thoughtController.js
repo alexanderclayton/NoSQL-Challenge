@@ -104,9 +104,12 @@ module.exports = {
                 ? res.status(404).json({ message: 'No thought with that ID'})
                 : res.json(thought)
         )
+        .then(() => res.json({ message: 'Reaction deleted' }))
         .catch((err) => {
-            console.log(err);
-            return res.status(500).json(err);
+            if (!res.headersSent) {
+                console.log(err);
+                return res.status(500).json(err);
+            }
         });
     },
 };

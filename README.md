@@ -257,7 +257,7 @@ This Challenge is graded based on the following criteria:
 * Repository has a unique name.
 
 * Repository follows best practices for file structure and naming conventions.
-
+us
 * Repository follows best practices for class/id naming conventions, indentation, quality comments, etc.
 
 * Repository contains multiple descriptive commit messages.
