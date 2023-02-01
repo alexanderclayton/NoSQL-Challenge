@@ -15,15 +15,32 @@ const userSchema = new Schema(
             unique: true,
             validate: [ validator.isEmail, 'Must be a valid email' ], //not sure if this works yet
         },
-        thoughts: {
+        thoughts: [
+            {
             //not sure what this is yet...
-        },
-        friends: {
+                type: Schema.Types.ObjectId ,
+                ref: 'Thought',
+            },
+        ],
+        friends: [
+            {
             //not sure what this is yet...
-        }
-
-    }
+                type: Schema.Types.ObjectId,
+                ref: 'user',
+            },
+        ],
+    },
     //add the friendCount virtual here
+    {
+        toJSON: {
+            virtuals: true,
+        },
+        id: false,
+    }
 );
+
+userSchema.virtual('friendCount').get(function () {
+    return this.friends.length
+});
 
 module.exports = userSchema;
