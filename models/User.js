@@ -1,5 +1,5 @@
 const { Schema, model } = require('mongoose');
-const validator = requrire('validator');
+const validator = require('validator');
 
 const userSchema = new Schema(
     {
@@ -17,20 +17,17 @@ const userSchema = new Schema(
         },
         thoughts: [
             {
-            //not sure what this is yet...
                 type: Schema.Types.ObjectId ,
                 ref: 'Thought',
             },
         ],
         friends: [
             {
-            //not sure what this is yet...
                 type: Schema.Types.ObjectId,
-                ref: 'user',
+                ref: 'User',
             },
         ],
     },
-    //add the friendCount virtual here
     {
         toJSON: {
             virtuals: true,

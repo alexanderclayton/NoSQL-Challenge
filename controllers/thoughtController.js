@@ -4,12 +4,9 @@ module.exports = {
     //thought routes
     getThoughts(req, res) {
         Thought.find()
-        .select('__v')
-        .then(async (thoughts) => {
-            const thoughtObject = {
-                thoughts
-            };
-            return res.json(thoughtObject);
+        .select('-__v')
+        .then((thoughts) => {
+            return res.json(thoughts);
         })
         .catch((err) => {
             console.log(err);
@@ -18,7 +15,7 @@ module.exports = {
     },
     getSingleThought(req, res) {
         Thought.findOne({ _id: req.param.thoughtId })
-        .select('__v')
+        .select('-__v')
         .then((thought) =>
             !thought
                 ? res.status(404).json({ message: 'No thought with that ID' })

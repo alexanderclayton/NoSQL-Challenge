@@ -4,7 +4,7 @@ module.exports = {
     //user routes
     getUsers(req, res) {
         User.find()
-        .select('__v')
+        .select('-__v')
         .then((users) => {
             res.json(users);
         })
@@ -14,8 +14,8 @@ module.exports = {
         });
     },
     getSingleUser(req, res) {
-        User.findOne({ _id: req.param.userId })
-        .select('__v')
+        User.findOne({ _id: req.params.userId })
+        .select('-__v')
         .populate('friends')
         .populate('thoughts')
         .then((user) =>
@@ -63,7 +63,12 @@ module.exports = {
                 : Thought.deleteMany({ _id: { $in: user.thoughts } })
         )
         .then(() => res.json({ message: 'User deleted'}))
-        .catch((err) => res.status(500).json(err));
+        .catch((err) => {
+            if (!res.headersSent) {
+                console.log(err);
+                return res.status(500).json(err);
+            }
+        });
     },
     addFriend(req, res) {
         User.findOneAndUpdate(
@@ -77,8 +82,10 @@ module.exports = {
                 : res.json(user)
         )
         .catch((err) => {
-            console.log(err);
-            return res.status(500).json(err);
+            if (!res.headersSent) {
+                console.log(err);
+                return res.status(500).json(err);
+            }
         });
     },
     deleteFriend(req, res) {
