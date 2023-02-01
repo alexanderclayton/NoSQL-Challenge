@@ -23,6 +23,12 @@ const reactionSchema = new Schema(
         },
     },
     //This is schema only?  Will not be a model, but instead a subdocument for the thought model.
+    {
+        toJSON: {
+            virtuals: true,
+        },
+        id: false,
+    }
 );
 
 module.exports = reactionSchema;

@@ -1,10 +1,10 @@
-const { User, Thought, Reaction } = require('../models');
-//do we need reaction here?
+const { User, Thought } = require('../models');
 
 module.exports = {
     //user routes
     getUsers(req, res) {
         User.find()
+        .select('__v')
         .then(async (users) => {
             const userObject = {
                 users
@@ -61,9 +61,25 @@ module.exports = {
         .then((user) =>
             !user
                 ? res.status(404).json({ message: 'No user with that ID'})
-                : User.deleteMany({ _id: { $in: user.thoughts } })
+                : Thought.deleteMany({ _id: { $in: user.thoughts } })
         )
         .then(() => res.json({ message: 'User deleted'}))
         .catch((err) => res.status(500).json(err));
-    }
+    },
+    addFriend(req, res) {
+        User.findOneAndUpdate(
+            { _id: req.params.userId},
+            { $pull: { friends: req.params.friendId } },
+            { new: true }
+        )
+        .then((user) =>
+            !user
+                ? res.status(404).json({ message: 'No user with that ID'})
+                : res.json(user)
+        )
+        .catch((err) => {
+            console.log(err);
+            res.status(500).json(err);
+        });
+    },
 }

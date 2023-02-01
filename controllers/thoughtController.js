@@ -1,10 +1,10 @@
-const { User, Thought, Reaction } = require('../models');
-//do we need a reaction here?
+const { User, Thought } = require('../models');
 
 module.exports = {
     //thought routes
     getThoughts(req, res) {
         Thought.find()
+        .select('__v')
         .then(async (thoughts) => {
             const thoughtObject = {
                 thoughts
@@ -61,9 +61,44 @@ module.exports = {
         .then((thought) =>
             !thought
                 ? res.status(404).json({ message: 'No thought with that ID'})
-                : User.deleteMany({ _id: { $in: user.thoughts } }) //this isn't correct...
+                : User.deleteOne({ _id: { $in: user.thoughts } }) //this isn't correct...
         )
         .then(() => res.json({ message: 'Thought deleted'}))
-        .catch((err) => res.status(500).json(err));
-    }
-}
+        .catch((err) => {
+            console.log(err);
+            res.status(500).json(err);
+        });
+    },
+    addReaction(req, res) {
+        Thought.findOneAndUpdate(
+            { _id: req.params.thoughtId },
+            { $addToSet: { reactions: req.body } },
+            { runValidators: true, new: true }
+        )
+        .then((thought) =>
+            !thought
+                ? res.status(404).json({ message: 'No thought with that ID'})
+                : res.json(thought)
+        )
+        .catch((err) => {
+            console.log(err);
+            res.status(500).json(err);
+        });
+    },
+    deleteReaction(req, res) {
+        Thought.findOneAndUpdate(
+            { _id: req.params.thoughtId },
+            { $pull: { reactions: { reactionId: req.params.reactionId } } },
+            { runValidators: true, new: true }
+        )
+        .then((thought) =>
+            !thought
+                ? res.status(404).json({ message: 'No thought with that ID'})
+                : res.json(thought)
+        )
+        .catch((err) => {
+            console.log(err);
+            res.status(500).json(err);
+        });
+    },
+};
