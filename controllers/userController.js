@@ -5,11 +5,8 @@ module.exports = {
     getUsers(req, res) {
         User.find()
         .select('__v')
-        .then(async (users) => {
-            const userObject = {
-                users
-            };
-            return res.json(userObject);
+        .then((users) => {
+            res.json(users);
         })
         .catch((err) => {
             console.log(err);
@@ -19,6 +16,8 @@ module.exports = {
     getSingleUser(req, res) {
         User.findOne({ _id: req.param.userId })
         .select('__v')
+        .populate('friends')
+        .populate('thoughts')
         .then((user) =>
             !user
                 ? res.status(404).json({ message: 'No user with that ID' })
@@ -52,8 +51,8 @@ module.exports = {
                 : res.json(user)
         )
         .catch((err) => {
-                console.log(err);
-                return res.status(500).json(err);
+            console.log(err);
+            return res.status(500).json(err);
         })
     },
     deleteUser(req, res) {
@@ -79,7 +78,7 @@ module.exports = {
         )
         .catch((err) => {
             console.log(err);
-            res.status(500).json(err);
+            return res.status(500).json(err);
         });
     },
 }

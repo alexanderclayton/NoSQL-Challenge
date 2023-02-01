@@ -31,10 +31,17 @@ module.exports = {
             return res.status(500).json(err);
         });        
     },
-    //need to push the thought '_id' to the associated user
     createThought(req, res) {
         Thought.create(req.body)
-        .then((thought) => res.json(thought))
+        .then((thought) => 
+            !thought
+                ? res.status(404).json({ message: 'No thought with that ID' })
+                : User.findOneAndUpdate(
+                    { _id: req.body.userId },
+                    { $push: { thoughts: thought._id } },
+                    { new: true }
+                )
+        )
         .catch((err) => {
             console.log(err);
             return res.status(500).json(err);
@@ -52,8 +59,8 @@ module.exports = {
                 : res.json(thought)
         )
         .catch((err) => {
-                console.log(err);
-                return res.status(500).json(err);
+            console.log(err);
+            return res.status(500).json(err);
         })
     },
     deletethought(req, res) {
@@ -61,12 +68,16 @@ module.exports = {
         .then((thought) =>
             !thought
                 ? res.status(404).json({ message: 'No thought with that ID'})
-                : User.deleteOne({ _id: { $in: user.thoughts } }) //this isn't correct...
+                : User.findOneAndUpdate(
+                    { thoughts: req.params.thoughtId },
+                    { $pull: { thoughts: req.params.thoughtId } },
+                    { new: true }
+                )
         )
         .then(() => res.json({ message: 'Thought deleted'}))
         .catch((err) => {
             console.log(err);
-            res.status(500).json(err);
+            return res.status(500).json(err);
         });
     },
     addReaction(req, res) {
@@ -82,7 +93,7 @@ module.exports = {
         )
         .catch((err) => {
             console.log(err);
-            res.status(500).json(err);
+            return res.status(500).json(err);
         });
     },
     deleteReaction(req, res) {
@@ -98,7 +109,7 @@ module.exports = {
         )
         .catch((err) => {
             console.log(err);
-            res.status(500).json(err);
+            return res.status(500).json(err);
         });
     },
 };
