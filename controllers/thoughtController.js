@@ -63,7 +63,7 @@ module.exports = {
             return res.status(500).json(err);
         })
     },
-    deletethought(req, res) {
+    deleteThought(req, res) {
         Thought.findOneAndDelete({ _id: req.params.thoughtId })
         .then((thought) =>
             !thought
